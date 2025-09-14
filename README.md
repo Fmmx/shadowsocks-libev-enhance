@@ -57,7 +57,7 @@
 
 ```bash
 # 下载优化版脚本
-wget --no-check-certificate -O shadowsocks-all.sh https://raw.githubusercontent.com/Fmmx/shadowsocks-libev-enhance/master/shadowsocks-libev-enhance.sh
+wget --no-check-certificate -O shadowsocks-libev-enhance.sh https://raw.githubusercontent.com/Fmmx/shadowsocks-libev-enhance/master/shadowsocks-libev-enhance.sh
 
 # 设置执行权限
 chmod +x shadowsocks-libev-enhance.sh
