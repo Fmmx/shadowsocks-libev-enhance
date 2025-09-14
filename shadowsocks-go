@@ -12,7 +12,7 @@
 # Description:       Start or stop the Shadowsocks-go server
 ### END INIT INFO
 
-# Author: Teddysun <i@teddysun.com>
+# Author: JK
 
 # Source function library
 . /etc/rc.d/init.d/functions
