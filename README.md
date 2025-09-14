@@ -57,13 +57,13 @@
 
 ```bash
 # 下载优化版脚本
-wget --no-check-certificate -O shadowsocks-all.sh https://你的脚本地址
+wget --no-check-certificate -O shadowsocks-all.sh https://raw.githubusercontent.com/Fmmx/shadowsocks-libev-enhance/master/shadowsocks-libev-enhance.sh
 
 # 设置执行权限
-chmod +x shadowsocks-all.sh
+chmod +x shadowsocks-libev-enhance.sh
 
 # 运行安装
-./shadowsocks-all.sh
+./shadowsocks-libev-enhance.sh
 ```
 
 ## 兼容性支持
