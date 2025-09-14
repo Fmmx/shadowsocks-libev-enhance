@@ -466,24 +466,39 @@ error_detect_depends(){
             exit 1
         fi
     # 特殊处理 PCRE 相关包
-    elif [[ "$depend" == "libpcre3" ]]; then
-        # 先尝试安装 libpcre3
+    elif [[ "$depend" == "libpcre3" ]] || [[ "$depend" == "libpcre3-dev" ]]; then
+        # 检查是否已安装替代包
+        if dpkg -l | grep -qw "^ii.*libpcre2-dev"; then
+            echo -e "[${green}Info${plain}] Alternative package libpcre2-dev is already installed"
+            return 0
+        elif dpkg -l | grep -qw "^ii.*libpcre3-dev"; then
+            echo -e "[${green}Info${plain}] Alternative package libpcre3-dev is already installed"
+            return 0
+        fi
+
+        # 先尝试安装原始包
         ${command} > /dev/null 2>&1
         local install_result=$?
         if [ ${install_result} -ne 0 ]; then
             # 尝试 libpcre2-dev 替代包
             local alt_command
-            alt_command=$(echo "${command}" | sed 's/libpcre3/libpcre2-dev/')
+            alt_command=$(echo "${command}" | sed -e 's/libpcre3-dev/libpcre2-dev/' -e 's/libpcre3/libpcre2-dev/')
             echo -e "[${yellow}Warning${plain}] ${depend} not available, trying libpcre2-dev alternative..."
             ${alt_command} > /dev/null 2>&1
             if [ $? -ne 0 ]; then
-                # 再尝试 libpcre3-dev
-                local alt_command2
-                alt_command2=$(echo "${command}" | sed 's/libpcre3/libpcre3-dev/')
-                echo -e "[${yellow}Warning${plain}] libpcre2-dev not available, trying libpcre3-dev..."
-                ${alt_command2} > /dev/null 2>&1
-                if [ $? -ne 0 ]; then
-                    echo -e "[${red}Error${plain}] Failed to install ${red}${depend}${plain} and its alternatives (libpcre2-dev, libpcre3-dev)"
+                # 再尝试 libpcre3-dev（如果原包不是libpcre3-dev）
+                if [[ "$depend" != "libpcre3-dev" ]]; then
+                    local alt_command2
+                    alt_command2=$(echo "${command}" | sed 's/libpcre3/libpcre3-dev/')
+                    echo -e "[${yellow}Warning${plain}] libpcre2-dev failed, trying libpcre3-dev..."
+                    ${alt_command2} > /dev/null 2>&1
+                    if [ $? -ne 0 ]; then
+                        echo -e "[${red}Error${plain}] Failed to install ${red}${depend}${plain} and its alternatives (libpcre2-dev, libpcre3-dev)"
+                        echo 'Please visit: JK and contact.'
+                        exit 1
+                    fi
+                else
+                    echo -e "[${red}Error${plain}] Failed to install ${red}${depend}${plain} and libpcre2-dev alternative"
                     echo 'Please visit: JK and contact.'
                     exit 1
                 fi
